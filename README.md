@@ -56,3 +56,4 @@ Le jeu se jouera principalement en entrant des mots en guise d'action, chaque co
 - "Attaque" - Attaquer l'ennemi
 - "Feu" - Envoyer une boule de feu
 - "Continuer" - Continuer la progression (lors des transition si le joueur décide de ne pas agir)
+- "Commencer" - Démarrer votre aventure (au menu du jeu)
