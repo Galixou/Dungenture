@@ -54,4 +54,5 @@ Le jeu se jouera principalement en entrant des mots en guise d'action, chaque co
 - "Mana" - Generer du mana (-1 tour)
 - "Sante" - Generer de la santé (-20 mana)
 - "Attaque" - Attaquer l'ennemi
+- "Feu" - Envoyer une boule de feu
 - "Continuer" - Continuer la progression (lors des transition si le joueur décide de ne pas agir)
