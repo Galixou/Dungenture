@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/code/Dungenture",
-      "program": "d:/code/Dungenture/build/Debug/outDebug",
+      "cwd": "d:/code/Dungenture/Source",
+      "program": "d:/code/Dungenture/Source/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
