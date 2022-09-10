@@ -59,18 +59,14 @@ int main()
         witchEvent();
     }
 
-    /*if (spiderFightUnlocked == 1)
+    if (spiderFightUnlocked == 1)
     {
         spiderFight();
-    }*/
-    
-    if (playerDead == 1)
-    {
-        system("cls");
-        printf("Vous avez perdu.\n\n");
+    }
 
-        system("pause");
-        return 0;
+    if(fight1Win == 1 && fight2Win ==1 && fight3Win == 1)
+    {
+        bossFight();
     }
     
     if (bossFightWin == 1)
@@ -212,15 +208,13 @@ void witchEvent()
 
 void enemy1()
 {
-    fight1 = 0;
-
     enemy1Health = 200;
     playerTurn = 1;
 
     printf("COMBAT\n\n");
 
     showStat();
-    printf("Ennemi:\n");
+    printf("Tartan:\n");
     printf("PV: %.1f\n\n", enemy1Health);
 
     menuShow();
@@ -233,82 +227,19 @@ void enemy1()
 
             if (strcmp(entry, "Attaque") == 0)
             {
-                if (preciousObjectLuck == 1)
-                {
-                    enemy1Health -= 25;
-                }
-                else
-                {
-                    enemy1Health -= 20;
-                }
-
-                playerTurn = 0;
+                attack();
             }
             else if (strcmp(entry, "Feu") == 0)
             {
-                if (playerMana >= 50)
-                {
-                    enemy1Health -= 75;
-                    playerMana -= 50;
-
-                    playerTurn = 0;
-                }
-                else
-                {
-                    printf("\033[A\033[2K");
-                    scanf("%s", &entry);
-                }
+                fire();
             }
             else if (strcmp(entry, "Sante") == 0)
             {
-                if (playerHealth == 100 || playerHealth == 150)
-                {
-                    printf("\033[A\033[2K");
-                    scanf("%s", &entry);
-                }
-                else
-                {
-                    if (playerMana > 20)
-                    {
-                        playerHealth += 35;
-                        playerMana -= 20;
-
-                        if (preciousObjectLuck == 1)
-                        {
-                            if (playerHealth >= 150)
-                            {
-                                playerHealth = 150;
-                            }
-                        }
-                        else
-                        {
-                            if (playerHealth >= 100)
-                            {
-                                playerHealth = 100;
-                            }
-                        }
-
-                        playerTurn = 0;
-                    }
-                }
+                generateHealth();
             }
             else if (strcmp(entry, "Mana") == 0)
             {
-                if (playerMana == 100)
-                {
-                    printf("\033[A\033[2K");
-                    scanf("%s", &entry);
-                }
-                else
-                {
-                    playerMana += 35;
-                    playerTurn = 0;
-
-                    if (playerMana >= 100)
-                    {
-                        playerMana = 100;
-                    }
-                }
+                generateMana();
             }
             else
             {
@@ -318,29 +249,304 @@ void enemy1()
         }
         else
         {
-            playerHealth -= 100;
+            playerHealth -= 10;
 
             system("cls");
 
             printf("COMBAT\n\n");
 
             showStat();
-            printf("Ennemi:\n");
+            printf("Tartan:\n");
             printf("PV: %.1f\n\n", enemy1Health);
 
             menuShow();
+
+            if (playerHealth <= 0)
+            {
+                playerHealth = 0;
+                end();
+            }
+
+            playerTurn = 1;
+        }
+    }
+    
+    fight1 = 0;
+    fight1Win = 1;
+}
+
+void enemy2()
+{
+    enemy2Health = 200;
+    playerTurn = 1;
+
+    printf("COMBAT\n\n");
+
+    showStat();
+    printf("Gargan:\n");
+    printf("PV: %.1f\n\n", enemy2Health);
+
+    menuShow();
+
+    while (enemy2Health > 0)
+    {
+        if(playerTurn == 1)
+        {
+            scanf("%s", &entry);
+
+            if (strcmp(entry, "Attaque") == 0)
+            {
+                attack();
+            }
+            else if (strcmp(entry, "Feu") == 0)
+            {
+                fire();
+            }
+            else if (strcmp(entry, "Sante") == 0)
+            {
+                generateHealth();
+            }
+            else if (strcmp(entry, "Mana") == 0)
+            {
+                generateMana();
+            }
+            else
+            {
+                printf("\033[A\033[2K");
+                scanf("%s", &entry);
+            }
+        }
+        else
+        {
+            playerHealth -= 15;
+
+            system("cls");
+
+            printf("COMBAT\n\n");
+
+            showStat();
+            printf("Gargan:\n");
+            printf("PV: %.1f\n\n", enemy2Health);
+
+            menuShow();
+
+            if (playerHealth <= 0)
+            {
+                playerHealth = 0;
+                end();
+            }
+
+            playerTurn = 1;
+        }
+    }
+    
+    fight2 = 0;
+    fight2Win = 1;
+}
+
+void enemy3()
+{
+    enemy3Health = 200;
+    playerTurn = 1;
+
+    printf("COMBAT\n\n");
+
+    showStat();
+    printf("Fransica:\n");
+    printf("PV: %.1f\n\n", enemy3Health);
+
+    menuShow();
+
+    while (enemy3Health > 0)
+    {
+        if(playerTurn == 1)
+        {
+            scanf("%s", &entry);
+
+            if (strcmp(entry, "Attaque") == 0)
+            {
+                attack();
+            }
+            else if (strcmp(entry, "Feu") == 0)
+            {
+                fire();
+            }
+            else if (strcmp(entry, "Sante") == 0)
+            {
+                generateHealth();
+            }
+            else if (strcmp(entry, "Mana") == 0)
+            {
+                generateMana();
+            }
+            else
+            {
+                printf("\033[A\033[2K");
+                scanf("%s", &entry);
+            }
+        }
+        else
+        {
+            playerHealth -= 20;
+
+            system("cls");
+
+            printf("COMBAT\n\n");
+
+            showStat();
+            printf("Fransica:\n");
+            printf("PV: %.1f\n\n", enemy3Health);
+
+            menuShow();
+
+            if (playerHealth <= 0)
+            {
+                playerHealth = 0;
+                end();
+            }
 
             playerTurn = 1;
         }
     }
 
-    if (playerHealth < 0)
+    fight3 = 0;
+    fight3Win = 1;
+}
+
+void bossFight()
+{
+    bossHealth = 300;
+    playerTurn = 1;
+
+    printf("COMBAT\n\n");
+
+    showStat();
+    printf("BOSS:\n");
+    printf("PV: %.1f\n\n", bossHealth);
+
+    menuShow();
+
+    while (bossHealth > 0)
     {
-        playerDead = 1;
-        playerHealth = 0;
+        if(playerTurn == 1)
+        {
+            scanf("%s", &entry);
+
+            if (strcmp(entry, "Attaque") == 0)
+            {
+                attack();
+            }
+            else if (strcmp(entry, "Feu") == 0)
+            {
+                fire();
+            }
+            else if (strcmp(entry, "Sante") == 0)
+            {
+                generateHealth();
+            }
+            else if (strcmp(entry, "Mana") == 0)
+            {
+                generateMana();
+            }
+            else
+            {
+                printf("\033[A\033[2K");
+                scanf("%s", &entry);
+            }
+        }
+        else
+        {
+            playerHealth -= 30;
+
+            system("cls");
+
+            printf("COMBAT\n\n");
+
+            showStat();
+            printf("BOSS:\n");
+            printf("PV: %.1f\n\n", bossHealth);
+
+            menuShow();
+
+            if (playerHealth <= 0)
+            {
+                playerHealth = 0;
+                end();
+            }
+
+            playerTurn = 1;
+        }
     }
     
-    fight1Win = 1;
+    bossFightWin = 1;
+}
+
+void spiderFight()
+{
+    spiderHealth = 250;
+    playerTurn = 1;
+
+    printf("COMBAT\n\n");
+
+    showStat();
+    printf("SPIDER:\n");
+    printf("PV: %.1f\n\n", spiderHealth);
+
+    menuShow();
+
+    while (spiderHealth > 0)
+    {
+        if(playerTurn == 1)
+        {
+            scanf("%s", &entry);
+
+            if (strcmp(entry, "Attaque") == 0)
+            {
+                attack();
+            }
+            else if (strcmp(entry, "Feu") == 0)
+            {
+                fire();
+            }
+            else if (strcmp(entry, "Sante") == 0)
+            {
+                generateHealth();
+            }
+            else if (strcmp(entry, "Mana") == 0)
+            {
+                generateMana();
+            }
+            else
+            {
+                printf("\033[A\033[2K");
+                scanf("%s", &entry);
+            }
+        }
+        else
+        {
+            playerHealth -= 25;
+
+            system("cls");
+
+            printf("COMBAT\n\n");
+
+            showStat();
+            printf("SPIDER:\n");
+            printf("PV: %.1f\n\n", spiderHealth);
+
+            menuShow();
+
+            if (playerHealth <= 0)
+            {
+                playerHealth = 0;
+                end();
+            }
+
+            playerTurn = 1;
+        }
+    }
+
+    spiderFightUnlocked = 0;
 }
 
 void menuShow()
@@ -349,4 +555,159 @@ void menuShow()
     printf("Feu - Envoyer une boule de feu (-50 mana)\n");
     printf("Sante - Generer de la sante (-20 mana)\n");
     printf("Mana - Generer du mana (-1 tour)\n\n");
+}
+
+void attack()
+{
+    if (preciousObjectLuck == 1)
+    {
+        if (fight1 == 1)
+        {
+            enemy1Health -= 25;
+        }
+        else if (fight2 == 1)
+        {
+            enemy2Health -= 25;
+        }
+        else if (fight3 == 1)
+        {
+            enemy3Health -= 25;
+        }
+        else if (spiderFightUnlocked == 1)
+        {
+            spiderHealth -= 25;
+        }
+        else
+        {
+            bossHealth -= 25;
+        }
+    }
+    else
+    {
+        if (fight1 == 1)
+        {
+            enemy1Health -= 20;
+        }
+        else if (fight2 == 1)
+        {
+            enemy2Health -= 20;
+        }
+        else if (fight3 == 1)
+        {
+            enemy3Health -= 20;
+        }
+        else if (spiderFightUnlocked == 1)
+        {
+            spiderHealth -= 20;
+        }
+        else
+        {
+            bossHealth -= 20;
+        }
+    }
+
+    playerTurn = 0;
+}
+
+void fire()
+{
+    if (playerMana >= 50)
+    {
+        if (fight1 == 1)
+        {
+            enemy1Health -= 75;
+        }
+        else if (fight2 == 1)
+        {
+            enemy2Health -= 75;
+        }
+        else if (fight3 == 1)
+        {
+            enemy3Health -= 75;
+        }
+        else if (spiderFightUnlocked == 1)
+        {
+            spiderHealth -= 75;
+        }
+        else
+        {
+            bossHealth -= 75;
+        }
+
+        playerMana -= 50;
+
+        playerTurn = 0;
+    }
+    else
+    {
+        printf("\033[A\033[2K");
+        scanf("%s", &entry);
+    }
+}
+
+void generateHealth()
+{
+    if (playerHealth == 100 || playerHealth == 150)
+    {
+        printf("\033[A\033[2K");
+        scanf("%s", &entry);
+    }
+    else
+    {
+        if (playerMana > 20)
+        {
+            playerHealth += 35;
+            playerMana -= 20;
+
+            if (preciousObjectLuck == 1)
+            {
+                if (playerHealth >= 150)
+                {
+                    playerHealth = 150;
+                }
+            }
+            else
+            {
+                if (playerHealth >= 100)
+                {
+                    playerHealth = 100;
+                }
+            }
+
+            playerTurn = 0;
+        }
+    }
+}
+
+void generateMana()
+{
+    if (playerMana == 100)
+    {
+        printf("\033[A\033[2K");
+        scanf("%s", &entry);
+    }
+    else
+    {
+        playerMana += 35;
+        playerTurn = 0;
+
+        if (playerMana >= 100)
+        {
+            playerMana = 100;
+        }
+    }
+}
+
+void end()
+{
+    system("cls");
+    printf("Vous avez perdu.\n\n");
+
+    system("pause");
+    return 0;
+}
+
+void transition()
+{
+    
 }
