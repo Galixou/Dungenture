@@ -1,57 +1,14 @@
+// Les différends package que j'ai utiliser dans mon jeu.
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-char  entry[10];
-float playerHealth, playerMana;
-float enemy1Health, enemy2Health, enemy3Health, bossHealth, spiderHealth;
-int   preciousObjectEncounter, preciousObjectLuck, forgeEncounter, forgeLuck, speakingManEncounter, spiderFightUnlocked, bossFightUnlocked, witchEncounter, witchUnluck, fight1, fight2, fight3, fight1Win, fight2Win, fight3Win, bossFightWin, startGame, playerTurn, playerDead, spiderFightWin;
+char  entry[10]; // Pour lire le mot que l'on entre.
+float playerHealth, playerMana, enemyHealth; // Les variables du joueur et celui de l'ennemi.
+// Les différends booléens. 0 = false et 1 = true
+int   preciousObjectEncounter, preciousObjectLuck, forgeEncounter, forgeLuck, speakingManEncounter, spiderFightUnlocked, spiderFightWin, spiderFightWinned, bossFightUnlocked, bossFightWin, fight1, fight1Win, fight1Winned, fight2, fight2Win, fight2Winned, fight3, fight3Win, fight3Winned, startGame, playerTurn, playerDead;
 
-int main()
-{
-    playerHealth = 100;
-    playerMana = 100;
-
-
-    printf("\nWelcome to Dungenture\n\n");
-    printf("Commencer - Demarrer votre aventure\n\n");
-    scanf("%s", &entry);
-
-    if (strcmp(entry, "Commencer") == 0)
-    {
-        system("cls");
-        startGame = 1;
-        transition();
-    }
-    else
-    {
-        printf("\033[A\033[2K");
-        scanf("%s", &entry);
-    }
-
-    if (fight1 == 1)
-    {
-        transition();
-    }
-    else if (fight2 == 1)
-    {
-        transition();
-    }
-    else if (fight3 == 1)
-    {
-        transition();
-    }
-    else if (fight1Win == 1 && fight2Win ==1 && fight3Win == 1)
-    {
-        bossFightUnlocked = 1;
-        transition();
-    }
-    else if (spiderFightUnlocked == 1)
-    {
-        transition();
-    }
-}
-
+// Affiche les stats du joueur.
 void showStat()
 {
     printf("Joueur:\n");
@@ -59,20 +16,162 @@ void showStat()
     printf("Mana: %.1f\n\n", playerMana);
 }
 
-void enemy1()
+// Affichage des possibilités lors du combat.
+void menuShow()
 {
-    enemy1Health = 200;
+    printf("Attaque - Attaquer l'ennemi\n");
+    printf("Feu - Envoyer une boule de feu (-50 mana)\n");
+    printf("Sante - Generer de la sante (-20 mana)\n");
+    printf("Mana - Generer du mana (-1 tour)\n\n");
+}
+
+// Il affiche l'écran de fin, si l'on fini le boss de fin alors on gagne sinon on perd.
+int end()
+{
+    if (bossFightWin == 1)
+    {
+        system("cls");
+        printf("FELICITATION !\n");
+        printf("VOUS AVEZ GAGNE !\n\n");
+
+        system("pause");
+        return 0;
+    }
+    else
+    {
+        system("cls");
+        printf("Vous avez perdu.\n\n");
+
+        system("pause");
+        return 0;
+    }
+}
+
+/* Les combats fonctionnent sur un système de tour par tour, le joueur attaque toujours en 1er, le combat se termine lorsque le joueur bat l'ennemi.
+Les ennemies sont de plus en plus coriace, notamment le boss et l'arraignée. Le joueur a quant a lui la possibilités de faire 4 choix. 
+Ils sous la forme de 4 sous-programme: Attaque, feu, Sante et Mana. */
+
+// Une simple attaque, si l'on as rencontré le forgeron alors les attaques sont améliorés.
+int attack()
+{
+    /* Si l'on as rencontrés le forgeron alors nos attaques sont -25PV pour l'ennemi, 
+    sinon on envoie -20PV a l'ennemi. On termine notre tour après cette attaque */
+
+    if (forgeLuck == 1)
+    {
+        enemyHealth -= 25;
+    }
+    else
+    {
+        enemyHealth -= 20;
+    }
+
+    playerTurn = 0;
+}
+
+// Permet d'envoyer une boule de feu a l'ennemi contre du mana.
+int fire()
+{
+    /* On vérifie que le joueur a 50 Mana, si c'est le cas alors on envoie -75PV a l'ennemi contre 50 Mana et on termine notre tour.
+    Sinon on annule l'action et on demande une autre action.*/
+
+    if (playerMana >= 50)
+    {
+        enemyHealth -= 75;
+        playerMana -= 50;
+
+        playerTurn = 0;
+    }
+    else
+    {
+        printf("\033[A\033[2K");
+        scanf("%s", &entry);
+    }
+}
+
+// Il genere de la sante pour le joueur contre du mana.
+int generateHealth()
+{
+    /* Si la santé est déjà a 100% alors on annule et on demande une autre action, sinon on vérifie qu'il a le mana suffisant (20 Mana).
+    Si le joueur a le Mana suffisant alors on ajoute 35 PV et on retire 20 Mana, on vérifie que l'on dépasse pas le 100%, si c'est le cas
+    alors on le remet au bon taux, si l'on as rencontré le forgeron alors le 100% est a 150PV sinon 100PV */
+
+    if (playerHealth == 100 || playerHealth == 150)
+    {
+        printf("\033[A\033[2K");
+        scanf("%s", &entry);
+    }
+    else
+    {
+        if (playerMana > 20)
+        {
+            playerHealth += 35;
+            playerMana -= 20;
+
+            if (preciousObjectLuck == 1)
+            {
+                if (playerHealth >= 150)
+                {
+                    playerHealth = 150;
+                }
+            }
+            else
+            {
+                if (playerHealth >= 100)
+                {
+                    playerHealth = 100;
+                }
+            }
+
+            playerTurn = 0;
+        }
+        else
+        {
+            printf("\033[A\033[2K");
+            scanf("%s", &entry);
+        }
+    }
+}
+
+// Il genere du mana pour le joueur contre un tour.
+int generateMana()
+{
+    /* Si le mana est déjà a 100% alors on annule l'action et on redemande une autre action sinon on ajout 35 Mana au joueur, 
+    si cela depasse les 100% alors on le remet a 100%. */
+
+    if (playerMana == 100)
+    {
+        printf("\033[A\033[2K");
+        scanf("%s", &entry);
+    }
+    else
+    {
+        playerMana += 35;
+
+        if (playerMana >= 100)
+        {
+            playerMana = 100;
+        }
+
+        playerTurn = 0;
+    }
+}
+
+// Le combat contre le 1er ennemi, 200PV et -10PV pour le joueur par attaque.
+int enemy1()
+{
+    enemyHealth = 200;
     playerTurn = 1;
 
     printf("COMBAT\n\n");
 
     showStat();
     printf("Tartan:\n");
-    printf("PV: %.1f\n\n", enemy1Health);
+    printf("PV: %.1f\n\n", enemyHealth);
 
     menuShow();
 
-    while (enemy1Health > 0)
+    while (enemyHealth > 0)
     {
         if(playerTurn == 1)
         {
@@ -102,7 +201,7 @@ void enemy1()
         }
         else
         {
-            playerHealth -= 10;
+            playerHealth -= 150;
 
             system("cls");
 
@@ -110,7 +209,7 @@ void enemy1()
 
             showStat();
             printf("Tartan:\n");
-            printf("PV: %.1f\n\n", enemy1Health);
+            printf("PV: %.1f\n\n", enemyHealth);
 
             menuShow();
 
@@ -126,23 +225,26 @@ void enemy1()
     
     fight1 = 0;
     fight1Win = 1;
+    fight1Winned = 1;
+    system("cls");
     transition();
 }
 
-void enemy2()
+// Le combat contre le second ennemi, 200PV et -15PV pour le joueur par attaque.
+int enemy2()
 {
-    enemy2Health = 200;
+    enemyHealth = 200;
     playerTurn = 1;
 
     printf("COMBAT\n\n");
 
     showStat();
     printf("Gargan:\n");
-    printf("PV: %.1f\n\n", enemy2Health);
+    printf("PV: %.1f\n\n", enemyHealth);
 
     menuShow();
 
-    while (enemy2Health > 0)
+    while (enemyHealth > 0)
     {
         if(playerTurn == 1)
         {
@@ -180,7 +282,7 @@ void enemy2()
 
             showStat();
             printf("Gargan:\n");
-            printf("PV: %.1f\n\n", enemy2Health);
+            printf("PV: %.1f\n\n", enemyHealth);
 
             menuShow();
 
@@ -196,23 +298,26 @@ void enemy2()
     
     fight2 = 0;
     fight2Win = 1;
+    fight2Winned = 1;
+    system("cls");
     transition();
 }
 
-void enemy3()
+// Le combat contre le 3ème ennemi, 200PV et -20PV pour le joueur par attaque.
+int enemy3()
 {
-    enemy3Health = 200;
+    enemyHealth = 200;
     playerTurn = 1;
 
     printf("COMBAT\n\n");
 
     showStat();
     printf("Fransica:\n");
-    printf("PV: %.1f\n\n", enemy3Health);
+    printf("PV: %.1f\n\n", enemyHealth);
 
     menuShow();
 
-    while (enemy3Health > 0)
+    while (enemyHealth > 0)
     {
         if(playerTurn == 1)
         {
@@ -250,7 +355,7 @@ void enemy3()
 
             showStat();
             printf("Fransica:\n");
-            printf("PV: %.1f\n\n", enemy3Health);
+            printf("PV: %.1f\n\n", enemyHealth);
 
             menuShow();
 
@@ -266,23 +371,26 @@ void enemy3()
 
     fight3 = 0;
     fight3Win = 1;
+    fight3Winned = 1;
+    system("cls");
     transition();
 }
 
-void bossFight()
+// Le combat contre le boss, 300PV et -30PV pour le joueur par attaque.
+int bossFight()
 {
-    bossHealth = 300;
+    enemyHealth = 300;
     playerTurn = 1;
 
     printf("COMBAT\n\n");
 
     showStat();
     printf("BOSS:\n");
-    printf("PV: %.1f\n\n", bossHealth);
+    printf("PV: %.1f\n\n", enemyHealth);
 
     menuShow();
 
-    while (bossHealth > 0)
+    while (enemyHealth > 0)
     {
         if(playerTurn == 1)
         {
@@ -320,7 +428,7 @@ void bossFight()
 
             showStat();
             printf("BOSS:\n");
-            printf("PV: %.1f\n\n", bossHealth);
+            printf("PV: %.1f\n\n", enemyHealth);
 
             menuShow();
 
@@ -335,23 +443,25 @@ void bossFight()
     }
     
     bossFightWin = 1;
+    system("cls");
     transition();
 }
 
-void spiderFight()
+// Le combat contre l'arraignée, 250PV et -25PV pour le joueur par attaque.
+int spiderFight()
 {
-    spiderHealth = 250;
+    enemyHealth = 250;
     playerTurn = 1;
 
     printf("COMBAT\n\n");
 
     showStat();
     printf("Arraignee:\n");
-    printf("PV: %.1f\n\n", spiderHealth);
+    printf("PV: %.1f\n\n", enemyHealth);
 
     menuShow();
 
-    while (spiderHealth > 0)
+    while (enemyHealth > 0)
     {
         if(playerTurn == 1)
         {
@@ -389,7 +499,7 @@ void spiderFight()
 
             showStat();
             printf("Arraignee:\n");
-            printf("PV: %.1f\n\n", spiderHealth);
+            printf("PV: %.1f\n\n", enemyHealth);
 
             menuShow();
 
@@ -405,180 +515,18 @@ void spiderFight()
 
     spiderFightUnlocked = 0;
     spiderFightWin = 1;
+    spiderFightWinned = 1;
+    system("cls");
     transition();
 }
 
-void menuShow()
+/* Etant donné que c'est un jeu textuel se basant sur des action et du roleplay alors j'ai créer un sous-programme qui permet
+d'afficher la page correspondante en fonction des booléens. */
+
+// Affichage de chaque écran, des différentes transitions entre chaque morceau de l'histoire
+int transition()
 {
-    printf("Attaque - Attaquer l'ennemi\n");
-    printf("Feu - Envoyer une boule de feu (-50 mana)\n");
-    printf("Sante - Generer de la sante (-20 mana)\n");
-    printf("Mana - Generer du mana (-1 tour)\n\n");
-}
-
-void attack()
-{
-    if (preciousObjectLuck == 1)
-    {
-        if (fight1 == 1)
-        {
-            enemy1Health -= 25;
-        }
-        else if (fight2 == 1)
-        {
-            enemy2Health -= 25;
-        }
-        else if (fight3 == 1)
-        {
-            enemy3Health -= 25;
-        }
-        else if (spiderFightUnlocked == 1)
-        {
-            spiderHealth -= 25;
-        }
-        else
-        {
-            bossHealth -= 25;
-        }
-    }
-    else
-    {
-        if (fight1 == 1)
-        {
-            enemy1Health -= 20;
-        }
-        else if (fight2 == 1)
-        {
-            enemy2Health -= 20;
-        }
-        else if (fight3 == 1)
-        {
-            enemy3Health -= 20;
-        }
-        else if (spiderFightUnlocked == 1)
-        {
-            spiderHealth -= 20;
-        }
-        else
-        {
-            bossHealth -= 20;
-        }
-    }
-
-    playerTurn = 0;
-}
-
-void fire()
-{
-    if (playerMana >= 50)
-    {
-        if (fight1 == 1)
-        {
-            enemy1Health -= 75;
-        }
-        else if (fight2 == 1)
-        {
-            enemy2Health -= 75;
-        }
-        else if (fight3 == 1)
-        {
-            enemy3Health -= 75;
-        }
-        else if (spiderFightUnlocked == 1)
-        {
-            spiderHealth -= 75;
-        }
-        else
-        {
-            bossHealth -= 75;
-        }
-
-        playerMana -= 50;
-
-        playerTurn = 0;
-    }
-    else
-    {
-        printf("\033[A\033[2K");
-        scanf("%s", &entry);
-    }
-}
-
-void generateHealth()
-{
-    if (playerHealth == 100 || playerHealth == 150)
-    {
-        printf("\033[A\033[2K");
-        scanf("%s", &entry);
-    }
-    else
-    {
-        if (playerMana > 20)
-        {
-            playerHealth += 35;
-            playerMana -= 20;
-
-            if (preciousObjectLuck == 1)
-            {
-                if (playerHealth >= 150)
-                {
-                    playerHealth = 150;
-                }
-            }
-            else
-            {
-                if (playerHealth >= 100)
-                {
-                    playerHealth = 100;
-                }
-            }
-
-            playerTurn = 0;
-        }
-    }
-}
-
-void generateMana()
-{
-    if (playerMana == 100)
-    {
-        printf("\033[A\033[2K");
-        scanf("%s", &entry);
-    }
-    else
-    {
-        playerMana += 35;
-        playerTurn = 0;
-
-        if (playerMana >= 100)
-        {
-            playerMana = 100;
-        }
-    }
-}
-
-void end()
-{
-    system("cls");
-    printf("Vous avez perdu.\n\n");
-
-    system("pause");
-    return 0;
-
-    if (bossFightWin == 1)
-    {
-        system("cls");
-        printf("FELICITATION !\n");
-        printf("VOUS AVEZ GAGNE !\n\n");
-
-        system("pause");
-        return 0;
-    }
-}
-
-void transition()
-{
-    if (startGame == 1)
+    if (startGame == 1) // C'est l'écran de démarrage, pour introduire dans l'aventure qu'on va jouer.
     {
         printf("INTRODUCTION\n\n");
         showStat();
@@ -590,7 +538,8 @@ void transition()
         {
             system("cls");
             startGame = 0;
-
+            preciousObjectEncounter = 1;
+            transition();
         }
         else
         {
@@ -598,7 +547,7 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (preciousObjectEncounter == 1)
+    else if (preciousObjectEncounter == 1) // C'est la rencontre avec l'objet precieux.
     {
         printf("EVENEMENT\n\n");
         showStat();
@@ -613,6 +562,8 @@ void transition()
         {
             system("cls");
             preciousObjectEncounter = 0;
+            fight1 = 1;
+            transition();
         }
         else
         {
@@ -620,7 +571,7 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (forgeEncounter == 1)
+    else if (forgeEncounter == 1) // C'est lorsqu'on rencontre le forgeron.
     {
         printf("EVENEMENT\n\n");
         showStat();
@@ -635,7 +586,8 @@ void transition()
         {
             system("cls");
             forgeEncounter = 0;
-
+            fight2 = 1;
+            transition();
         }
         else
         {
@@ -643,14 +595,13 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (speakingManEncounter == 1)
+    else if (speakingManEncounter == 1) // C'est la rencontre avec l'homme qui nous raconte une anecdote.
     {
         printf("EVENEMENT\n\n");
         showStat();
         printf("Sur votre chemin un homme vous fait signe et decide de vous racontez une anecdote.\n");
         printf("\"Je me souviens quand les mineurs travaillees ici, j'etais moi-meme un mineur. en l'an 1410. Cette bonne epoque me manque... fichu arraignee...\"\n");
         printf("Apres l'avoir ecouter il s'en va dans la direction oppose a la votre. Vous poursuivez votre chemin.\n\n");
-        spiderFightUnlocked = 1;
         printf("Continuer - Continuer la progression\n\n");
         scanf("%s", &entry);
 
@@ -658,6 +609,8 @@ void transition()
         {
             system("cls");
             speakingManEncounter = 0;
+            spiderFightUnlocked = 1;
+            transition();
 
         }
         else
@@ -666,32 +619,11 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (witchEncounter == 1)
+    else if (fight1 == 1) // La transition vers le 1er combat de l'aventure.
     {
         printf("EVENEMENT\n\n");
         showStat();
-        printf("Vous croisez une sorciere qui apparait devant vous et rigole de votre malheur, vous perdez confiance en vous.\n");
-        printf("Chance de passer votre tour lors des combats.\n\n");
-        witchUnluck = 1;
-        printf("Continuer - Continuer la progression\n\n");
-        scanf("%s", &entry);
-
-        if(strcmp(entry, "Continuer") == 0)
-        {
-            system("cls");
-            witchEncounter = 0;
-        }
-        else
-        {
-            printf("\033[A\033[2K");
-            scanf("%s", &entry);
-        }
-    }
-    else if (fight1 == 1)
-    {
-        printf("EVENEMENT\n\n");
-        showStat();
-        printf("Un 1er monstre apparait sur votre chemin et il se fait nommé \"Tartan\". Il ne vous laisse aucun choix et vous oblige a le battre.\n\n");
+        printf("Un 1er monstre apparait sur votre chemin et il se fait nommer \"Tartan\". Il ne vous laisse aucun choix et vous oblige a le battre.\n\n");
         printf("Continuer - Continuer la progression\n\n");
         scanf("%s", &entry);
 
@@ -706,17 +638,20 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (fight1Win == 1)
+    else if (fight1Winned == 1) // Lorsqu'on bat le 1er ennemi.
     {
         printf("EVENEMENT\n\n");
         showStat();
-        printf("Ce 1er combat vous fatigua et vous avez sous-estimez la difficulter de cette grotte, cependant votre fierter et bon sens vous dit de continuer alors vous laissez le cadavre se vider de son sang contre le mur pour poursuivre l'aventure.\n\n");
+        printf("Ce 1er combat vous fatigua car vous avez sous-estimez la difficulter de cette grotte, cependant votre fierter et bon sens vous dit de continuer alors vous laissez le cadavre se vider de son sang contre le mur pour poursuivre l'aventure.\n\n");
         printf("Continuer - Continuer la progression\n\n");
         scanf("%s", &entry);
 
         if(strcmp(entry, "Continuer") == 0)
         {
             system("cls");
+            fight1Winned = 0;
+            forgeEncounter = 1;
+            transition();
         }
         else
         {
@@ -724,11 +659,11 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (fight2 == 1)
+    else if (fight2 == 1) // La transition vers le second combat de l'aventure.
     {
         printf("EVENEMENT\n\n");
         showStat();
-        printf("La terre se met a trembler et cela ne vous laisse aucun choix que de vous arretez. Un monstre trou le sol et se hisse jusqu'a arriver sur ses pieds en vous soufflant un long grognement suivi d'un \"GARGAN JE SUIS!!\". Vous comprenez que vous allez devoir battre Gargan.\n\n");
+        printf("La terre se met a trembler et cela ne vous laisse aucun choix que de vous arretez. Un monstre creer un trou le sol et se hisse jusqu'a arriver sur ses pieds en vous soufflant un long grognement suivi d'un \"GARGAN JE SUIS!!\". Vous comprenez que vous allez devoir battre Gargan.\n\n");
         printf("Continuer - Continuer la progression\n\n");
         scanf("%s", &entry);
 
@@ -743,7 +678,7 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (fight2Win == 1)
+    else if (fight2Winned == 1) // Lorsqu'on bat le second ennemi.
     {
         printf("EVENEMENT\n\n");
         showStat();
@@ -754,6 +689,9 @@ void transition()
         if(strcmp(entry, "Continuer") == 0)
         {
             system("cls");
+            fight2Winned = 0;
+            speakingManEncounter = 1;
+            transition();
         }
         else
         {
@@ -761,11 +699,11 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (fight3 == 1)
+    else if (fight3 == 1) // La transition vers le 3ème combat de l'aventure. 
     {
         printf("EVENEMENT\n\n");
         showStat();
-        printf("Un petit rire se fit entendre et vous marchez tranquillement tout en ecoutant une douce voix feminine murmurer \"Mes enfants... tu les as tués...\". Pris d'un ennui vous baillez subitement ce qui la met en rogne silencieusement et en coupant vite la discution elle fit une explosion de terre et de roche en vous lancant froidement un \"meurt.\".\n\n");
+        printf("Un petit rire se fit entendre et vous marchez tranquillement tout en ecoutant une douce voix feminine murmurer \"Mes enfants... tu les as tuer...\". Pris d'un ennui vous baillez subitement ce qui la met en rogne silencieusement et en coupant vite la discution elle fit une explosion de terre et de roche en vous lancant froidement un \"meurt.\".\n\n");
         printf("Continuer - Continuer la progression\n\n");
         scanf("%s", &entry);
 
@@ -780,7 +718,7 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (fight3Win == 1)
+    else if (fight3Winned == 1) // Lorsqu'on bat le 3ème ennemi.
     {
         printf("EVENEMENT\n\n");
         showStat();
@@ -791,7 +729,9 @@ void transition()
         if(strcmp(entry, "Continuer") == 0)
         {
             system("cls");
-
+            fight3Winned = 0;
+            bossFightUnlocked = 1;
+            transition();
         }
         else
         {
@@ -799,17 +739,18 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (bossFightUnlocked == 1)
+    else if (bossFightUnlocked == 1) // Lorsqu'on débloque le Boss final.
     {
         printf("EVENEMENT\n\n");
         showStat();
-        printf("Un frison vous parcours le corps en entier et sans que vous le remarquez un amas noir vous bloque le passage, vous le percutez, reculez et un regard vite se pose sur vous. Une larme de sang coule de ses 2 oeils et ils vous dit dans une langue que vous ne comprenez pas \"Liberos meos. Uxor mea. tu adjunge. Nunc.\".\n\n");
+        printf("Un frisson vous parcours le corps en entier et sans que vous le remarquez un amas noir vous bloque le passage, vous le percutez, reculez et un regard vide se pose sur vous. Une larme de sang coule de ses 2 yeux et il vous dit dans une langue que vous ne comprenez pas \"Liberos meos. Uxor mea. tu adjunge. Nunc.\".\n\n");
         printf("Continuer - Continuer la progression\n\n");
         scanf("%s", &entry);
 
         if(strcmp(entry, "Continuer") == 0)
         {
             system("cls");
+            bossFightUnlocked = 0;
             bossFight();
         }
         else
@@ -818,11 +759,11 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (bossFightWin == 1)
+    else if (bossFightWin == 1) // Lorsqu'on bat le Boss final.
     {
         printf("EVENEMENT\n\n");
         showStat();
-        printf("Vous observez le corps geant tomber au sol lentement avant de creer un enorme bruit et de le voir disparaitre en poussiere, des cris retentits et le donjon que vous explorez commence a se detruire, vous decidez de fuir a pleine jambe en voyant les différents passages que vous avez découvert se faire ensevellir par la poussiere et les debris. Vous arrivez a sortir a temps et vous regardez l'entree du donjon definitivement sceller. Le soleil eclatant fit resortir la poussiere sur votre peau et votre arme ensanglantée.\n\n");
+        printf("Vous observez le corps geant tomber au sol lentement avant de creer un enorme bruit et de le voir disparaitre en poussiere, des cris retentits et le donjon que vous explorez commence a se detruire, vous decidez de fuir a pleine jambe en voyant les differents passages que vous avez decouvert se faire ensevellir par la poussiere et les debris. Vous arrivez a sortir a temps et vous regardez l'entree du donjon definitivement sceller. Le soleil eclatant fit resortir la poussiere sur votre peau et votre arme ensanglanter.\n\n");
         printf("Terminer - Terminer l'histoire\n\n");
         scanf("%s", &entry);
 
@@ -837,11 +778,11 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (spiderFightUnlocked == 1)
+    else if (spiderFightUnlocked == 1) // La transition vers le combat avec l'arraignée.
     {
         printf("EVENEMENT\n\n");
         showStat();
-        printf("Dans l'obscurité qui vous entoure vous sentez quelque chose de mou et fileux sous vos pieds. Vous continuez avant de remarquer que l'amas mou et fileux devient de plus en plus epais et vous vous retrouvez confronter a une impasse, en faisant demi-tour vous voyez 8 enorme yeux vous fixer et 2 crocs suivis de petit gemissement d'insecte.\n\n");
+        printf("Dans l'obscuriter qui vous entoure vous sentez quelque chose de mou et fileux sous vos pieds. Vous continuez avant de remarquer que l'amas mou et fileux devient de plus en plus epais et vous vous retrouvez confronter a une impasse, en faisant demi-tour vous voyez 8 enorme yeux vous fixer et 2 crocs suivis de petit gemissement d'insecte.\n\n");
         printf("Continuer - Continuer la progression\n\n");
         scanf("%s", &entry);
 
@@ -856,18 +797,20 @@ void transition()
             scanf("%s", &entry);
         }
     }
-    else if (spiderFightWin == 1)
+    else if (spiderFightWinned == 1) // Lorsqu'on bat l'arraignée.
     {
         printf("EVENEMENT\n\n");
         showStat();
-        printf("L'arraignee que vous avez vaincu lacha un fin soupir avant de s'écrouler, vous l'enjambez et rebroussez chemin pour remarquer que vous vous etes tromper de direction, vous reprenez la bonne direction.\n\n");
+        printf("L'arraignee que vous avez vaincu lacha un fin soupir avant de s'ecrouler, vous l'enjambez et rebroussez chemin pour remarquer que vous vous etes tromper de direction, vous reprenez la bonne direction.\n\n");
         printf("Continuer - Continuer la progression\n\n");
         scanf("%s", &entry);
 
         if(strcmp(entry, "Continuer") == 0)
         {
             system("cls");
-            
+            spiderFightWinned = 0;
+            fight3 = 1;
+            transition();
         }
         else
         {
@@ -876,3 +819,27 @@ void transition()
         }
     }
 }
+
+int main()
+{
+    playerHealth = 100;
+    playerMana = 100;
+
+
+    printf("\nWelcome to Dungenture\n\n");
+    printf("Commencer - Demarrer votre aventure\n\n");
+    scanf("%s", &entry);
+
+    if (strcmp(entry, "Commencer") == 0)
+    {
+        system("cls");
+        startGame = 1;
+        transition();
+    }
+    else
+    {
+        printf("\033[A\033[2K");
+        scanf("%s", &entry);
+    }
+}
+
