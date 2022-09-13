@@ -201,7 +201,7 @@ int enemy1()
         }
         else
         {
-            playerHealth -= 150;
+            playerHealth -= 10;
 
             system("cls");
 
